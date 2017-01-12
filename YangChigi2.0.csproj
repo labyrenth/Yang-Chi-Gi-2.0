@@ -86,8 +86,11 @@
     <Compile Include="Assets\Script\Control\PlayerControltwo.cs" />
     <Compile Include="Assets\Script\Control\SheepControl.cs" />
     <Compile Include="Assets\Script\Control\SheepControltwo.cs" />
-    <Compile Include="Assets\Script\Manage\CameraFollow.cs" />
+    <Compile Include="Assets\Script\Manage\ButtonEvent.cs" />
     <Compile Include="Assets\Script\Manage\GameManager.cs" />
+    <Compile Include="Assets\Script\Manage\Marker.cs" />
+    <Compile Include="Assets\Script\Manage\PlayManage.cs" />
+    <Compile Include="Assets\Script\Manage\SelectButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

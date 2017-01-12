@@ -12,6 +12,8 @@ public class SheepControltwo : MonoBehaviour
  
     public SheepState SS;
 
+    public int SheepScore;
+
     // Use this for initialization
 
     void OnTriggerEnter(Collider col)       //부딪힌 오브젝트의 종류에 따른 반응 정리

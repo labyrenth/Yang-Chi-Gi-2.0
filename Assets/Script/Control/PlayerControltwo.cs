@@ -5,22 +5,24 @@ using UnityEngine;
 public class PlayerControltwo : MonoBehaviour
 {
 
-	//공개 항목
+    //공개 항목
     public int PlayerNumber;
-    public int Score;
+    public float Score;
+    public float InitialScore;
     public float speed;
     public float angle;
     public float turnspeed;
     public float mindistance;
-
+    public bool IsBoost;
+    public GameManager GM;
     public List<GameObject> SheepList;
+
     //비공개 항목
 
     string HorizontalControlName;
     string VerticalControlName;
     float HorizontalInputValue;
     float VerticalInputValue;
-
     Transform curtransform;
     Transform prevtransform;
 
@@ -28,7 +30,12 @@ public class PlayerControltwo : MonoBehaviour
     {
         HorizontalControlName = "Horizontal" + PlayerNumber;
         VerticalControlName = "Vertical" + PlayerNumber;
-        mindistance = 5f;
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+        this.speed = PlayManage.Instance.speed;
+        this.angle = PlayManage.Instance.angle;
+        this.InitialScore = PlayManage.Instance.score;
+        this.mindistance = PlayManage.Instance.distance;
+        this.IsBoost = PlayManage.Instance.IsBoost;
     }
 
     public void PlayerInput()
@@ -58,8 +65,8 @@ public class PlayerControltwo : MonoBehaviour
 
         for (int temp = index; temp <= SheepList.Count - 1; temp++)
         {
-            SheepList[temp].GetComponent<SheepControl>().Master = target;
-            target.GetComponent<PlayerControl>().SheepList.Add(this.SheepList[temp]);
+            SheepList[temp].GetComponent<SheepControltwo>().Master = target;
+            target.GetComponent<PlayerControltwo>().SheepList.Add(this.SheepList[temp]);
         }
         SheepList.RemoveRange(index, SheepList.Count - index);
     }
@@ -84,7 +91,7 @@ public class PlayerControltwo : MonoBehaviour
                 prevtransform = SheepList[i - 1].transform;
             }
 
-            float dis = Vector3.Distance(prevtransform.position,curtransform.position);
+            float dis = Vector3.Distance(prevtransform.position, curtransform.position);
             Vector3 newpos = prevtransform.position;
 
             float T = Time.deltaTime * dis / mindistance * speed;
@@ -95,10 +102,101 @@ public class PlayerControltwo : MonoBehaviour
         }
     }
 
+    float CalSheepScore()
+    {
+        float calscore = InitialScore;
+        foreach (GameObject i in SheepList)
+        {
+            calscore += i.GetComponent<SheepControltwo>().SheepScore;
+        }
+        return calscore;
+    }
+
+    void CheckSheepType()
+    {
+        int bronze = 0;
+        int sliver = 0;
+        for (int i = 0; i < SheepList.Count; i++)
+        {
+            if (SheepList[i].tag == "BronzeSheep")
+            {
+                bronze++;
+            }
+            else if (SheepList[i].tag == "SliverSheep")
+            {
+                sliver++;
+            }
+        }
+
+        if (bronze >= 5)
+        {
+            ChangeSheep("BronzeSheep", GM.silversheepprefab);
+        }
+        if (sliver >= 5)
+        {
+            ChangeSheep("SliverSheep", GM.goldensheepprefab);
+        }
+
+    }
+
+    void ChangeSheep(string targettag, GameObject targetSheep)
+    {
+        int ChangeCount = 5;
+        for (int i = SheepList.Count - 1; ; i--)
+        {
+            if (ChangeCount == 5 && SheepList[i].tag == targettag)
+            {
+                GameObject newsheep = Instantiate(targetSheep, GM.Sheephorde.transform);
+                SheepControltwo tempsheepcontrol = newsheep.GetComponent<SheepControltwo>();
+                newsheep.transform.position = SheepList[i].transform.position;
+                newsheep.transform.rotation = SheepList[i].transform.rotation;
+                tempsheepcontrol.leader = SheepList[i].GetComponent<SheepControltwo>().leader;
+                tempsheepcontrol.Master = SheepList[i].GetComponent<SheepControltwo>().Master;
+                tempsheepcontrol.SS = SheepState.HAVEOWNER;
+                GameObject tempsheep = SheepList[i];
+                SheepList[i] = newsheep;
+                tempsheep.SetActive(false);
+                ChangeCount--;
+            }
+
+            else if(SheepList[i].tag == targettag && ChangeCount != 5)
+            {
+                GameObject followsheep;
+                followsheep = SheepList[i + 1];
+                if (i == 0)
+                    followsheep.GetComponent<SheepControltwo>().leader = this.gameObject;
+                else
+                    followsheep.GetComponent<SheepControltwo>().leader = SheepList[i - 1];
+                GameObject tempsheep = SheepList[i];
+                SheepList.RemoveAt(i);
+                tempsheep.SetActive(false);
+                ChangeCount--;
+            }
+            if (ChangeCount == 0)
+            {
+                break;
+            }
+
+        }
+    }
+
+    void AfterBoost(float targetTime,float DurationTime)
+    {
+        if (IsBoost == true && targetTime >= DurationTime)
+        {
+            this.speed = 10;
+            this.angle = 6.7f;
+            this.IsBoost = false;
+        }
+    }
+
     public void Update()
     {
         GoStraight();
         KeyboardInput();
         LeaderSheep();
+        Score = CalSheepScore();
+        CheckSheepType();
+        AfterBoost(Time.fixedTime, 60f);
     }
 }

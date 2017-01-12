@@ -6,40 +6,49 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 
     GameObject Planet;
-    GameObject Sheephorde;
-    
-    int SheepCount;
-
     Text UItext;
-    Text UIsheep;
+    Text UIscore;
     GameObject EndScreen;
-    GameObject Player1;
-    GameObject Player2;
+    GameObject Player;
 
-    int Player1Score;
-    int Player2Score;
+    RectTransform Compassbar;
 
-    public GameObject sheepprefab;
+    float PlayerScore;
+
+    public GameObject Enemy;
+    public GameObject Sheephorde;
+    public GameObject bronzesheepprefab;
+    public GameObject silversheepprefab;
+    public GameObject goldensheepprefab;
+    public GameObject BackGround;
+    public RectTransform positiveMarkerPrefab;
+    public RectTransform NegativeMarketPrefab;
+
+    public List<GameObject> SheepList;
+    public List<GameObject> grassprefab;
+    public List<RectTransform> sheepMarker;
     public float PlanetScale;
     public float initialtime;
     public int initialSheep;
-
+    
     void Start()
     {
         Planet = GameObject.Find("Planet");
         Sheephorde = GameObject.Find("Sheephorde");
+        BackGround = GameObject.Find("BackGround");
 
         UItext = GameObject.Find("TimeText").GetComponent<Text>();
-        UIsheep = GameObject.Find("SheepText").GetComponent<Text>();
+        UIscore = GameObject.Find("ScoreText").GetComponent<Text>();
+        Compassbar = GameObject.Find("Compassbar").GetComponent<RectTransform>();
 
         EndScreen = GameObject.Find("EndScreen");
         EndScreen.SetActive(false);
-        Player1 = GameObject.Find("PlayerOne");
-        Player2 = GameObject.Find("PlayerTwo");
+        Player = GameObject.Find("PlayerOne");
+        
+        PlayerScore = 0;
 
-        SheepCount = 0;
-        for (int i = 0; i < initialSheep; i++)
-            SheepSpawn();
+        SheepSpawn(bronzesheepprefab, PlanetScale,initialSheep);
+        GrassSpawn(grassprefab, 24.5f, 150);
     }
 
     void Showremainingtime()
@@ -54,36 +63,24 @@ public class GameManager : MonoBehaviour {
             timetext = "Left Time : " + 0;
             finishgame();
         }
+
         UItext.text = timetext;
     }
 
-    void ShowMySheep()
+    void ShowMyScore()
     {
-        string sheeptext;
-        SheepCount = Player1.GetComponent<PlayerControltwo>().SheepList.Count;
-        if (SheepCount >= 10)
+        string scoretext;
+        PlayerScore = Player.GetComponent<PlayerControltwo>().Score;
+        if (PlayerScore >= 10)
         {
-            sheeptext = "My Sheep : " + SheepCount;
+            scoretext = "My Score : " + PlayerScore;
         }
         else
         {
-            sheeptext = "My Sheep : 0" + SheepCount;
+            scoretext = "My Score : 0" + PlayerScore;
         }
-        UIsheep.text = sheeptext;
+        UIscore.text = scoretext;
     }
-
-    /*void IncreaseSheepCount()
-    {
-        SheepCount++;
-    }
-
-    void DecreaseSheepCount()
-    {
-        if (SheepCount > 0)
-            SheepCount--;
-        else
-            SheepCount = 0;
-    }*/
 
     void finishgame()
     {
@@ -91,17 +88,63 @@ public class GameManager : MonoBehaviour {
         Time.timeScale = 0f;
     }
 
-    void SheepSpawn()   //양을 임의의 위치에 소환하는 메서드.
+    public void SheepSpawn(GameObject sheepprefab,float scale, int number)   //양을 임의의 위치에 소환하는 메서드.
     {
-        Vector3 newposition = Random.onUnitSphere * PlanetScale;
-        GameObject tempSheep = Instantiate(sheepprefab, newposition, Quaternion.Euler(0,0,0), Sheephorde.transform);
-        tempSheep.transform.rotation = Quaternion.FromToRotation(tempSheep.transform.up, newposition) * tempSheep.transform.rotation;
+        for (int i = 0; i < number; i++)
+        {
+            Vector3 newposition = Random.onUnitSphere * scale;
+            GameObject tempSheep = Instantiate(sheepprefab, newposition, Quaternion.Euler(0, 0, 0), Sheephorde.transform);
+            RectTransform tempMarker = Instantiate(positiveMarkerPrefab, Compassbar);
+            tempSheep.transform.rotation = Quaternion.FromToRotation(tempSheep.transform.up, newposition) * tempSheep.transform.rotation;
+            SheepList.Add(tempSheep);
+            sheepMarker.Add(tempMarker);
+        }
+    }
+
+    public void GrassSpawn(List<GameObject> grasslist, float scale, int number)
+    {
+        int listcount = grasslist.Count-1;
+        for (int i = 0; i < number; i++)
+        {
+            int index = Random.Range(0, listcount);
+            Vector3 newposition = Random.onUnitSphere * scale;
+            GameObject tempgrass = Instantiate(grasslist[index], newposition, Quaternion.Euler(0, 0, 0), BackGround.transform);
+            tempgrass.transform.rotation = Quaternion.FromToRotation(tempgrass.transform.up, newposition) * tempgrass.transform.rotation;
+        }    
+    }
+
+    void ShowNegativeObjectInCompassbar(GameObject MainObject, GameObject TargetObject, RectTransform Marker)
+    {
+        float angle;
+        Vector3 PO = MainObject.transform.position;
+        Vector3 TO = TargetObject.transform.position;
+        Vector3 PTVector = TO - PO;
+        angle = Vector3.Dot(Player.transform.right, PTVector);    //플레이어의 오른쪽 벡터를 기준으로 내적.
+        Marker.localPosition = new Vector3(Mathf.Clamp(angle * 15, -300, 300), 0, 0);
+    }
+
+    void ShowPositiveObjectInCompassbar(GameObject MainObject, GameObject TargetObject, RectTransform Marker)
+    {
+        float angle;
+        Vector3 PO = MainObject.transform.position + new Vector3(0, 1, 0);
+        Vector3 TO = TargetObject.transform.position + new Vector3(0, 1, 0);
+        Vector3 PTVector = TO - PO;
+        angle = Vector3.Dot(Player.transform.right, PTVector);    //플레이어의 오른쪽 벡터를 기준으로 내적.
+        if (TargetObject.GetComponent<SheepControltwo>().Master == null)
+            Marker.localPosition = new Vector3(Mathf.Clamp(angle * 24, -300, 300), 0, 0);
+        else
+            Marker.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         Showremainingtime();
-        ShowMySheep();
+        ShowMyScore();
+        ShowNegativeObjectInCompassbar(Player,Enemy, NegativeMarketPrefab);
+        for(int i = 0; i<SheepList.Count; i++)
+        {
+            ShowPositiveObjectInCompassbar(Player, SheepList[i], sheepMarker[i]);
+        }
     }
 }
