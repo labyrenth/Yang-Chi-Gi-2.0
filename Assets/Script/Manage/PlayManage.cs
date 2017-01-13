@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class PlayManage : MonoBehaviour {
 
     public static PlayManage Instance;
+
+    public string playerID;
+    public int playerlevel;
     public float speed;
     public float angle;
     public float score;
@@ -17,11 +20,7 @@ public class PlayManage : MonoBehaviour {
         if (Instance == null)           //Static 변수를 지정하고 이것이 없을경우 - PlayManage 스크립트를 저장하고 이것이 전 범위적인 싱글톤 오브젝트가 된다.
         {
             DontDestroyOnLoad(this.gameObject);
-            this.speed = 15;
-            this.angle = 10;
-            this.score = 0;
-            this.distance = 5;
-            this.IsBoost = false;
+            LoadData();
             Instance = this;
         }
         else if(Instance != this)
@@ -35,5 +34,45 @@ public class PlayManage : MonoBehaviour {
     {
         SceneManager.LoadScene(name);
     }
+
+    public void SaveData()
+    {
+        PlayerPrefs.SetString("PLAYERID", playerID);
+        PlayerPrefs.SetInt("PLAYERLEVEL", playerlevel);
+        PlayerPrefs.SetFloat("INITIALSPEED",speed);
+        PlayerPrefs.SetFloat("INITIALANGLE", angle);
+        PlayerPrefs.SetFloat("INITIALSCORE",score);
+        PlayerPrefs.SetFloat("INITIALDISTANCE",distance);
+        if (IsBoost == false)
+            PlayerPrefs.SetInt("INITIALBOOST", 0);
+        else
+            PlayerPrefs.SetInt("INITIALBOOST", 1);
+    }
+
+    public void LoadData()
+    {
+        this.playerID = PlayerPrefs.GetString("PLAYERID", "Beginner");
+        this.playerlevel = PlayerPrefs.GetInt("PLAYERLEVEL", 1);
+        this.speed = PlayerPrefs.GetFloat("INITIALSPEED",15);
+        this.angle = PlayerPrefs.GetFloat("INITIALANGLE", 10);
+        this.score = PlayerPrefs.GetFloat("INITIALSCORE", 0);
+        this.distance = PlayerPrefs.GetFloat("INITIALDISTANCE", 5);
+        int boostcheck = PlayerPrefs.GetInt("INITIALBOOST", 0);
+        if (boostcheck == 0)
+            this.IsBoost = false;
+        else
+            this.IsBoost = true;
+    }
+
+    void Update()
+    {
+#if UNITY_ANDROID
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+#endif
+    }
+
 
 }
