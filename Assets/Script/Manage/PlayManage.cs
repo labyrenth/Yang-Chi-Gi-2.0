@@ -15,6 +15,9 @@ public class PlayManage : MonoBehaviour {
     public float distance;
     public bool IsBoost;
 
+    public float sound;
+    public int Quality;
+
     private void Awake()                //싱글톤 오브젝트를 만들자!
     {
         if (Instance == null)           //Static 변수를 지정하고 이것이 없을경우 - PlayManage 스크립트를 저장하고 이것이 전 범위적인 싱글톤 오브젝트가 된다.
@@ -47,6 +50,8 @@ public class PlayManage : MonoBehaviour {
             PlayerPrefs.SetInt("INITIALBOOST", 0);
         else
             PlayerPrefs.SetInt("INITIALBOOST", 1);
+        PlayerPrefs.SetFloat("SOUND", sound);
+        PlayerPrefs.SetInt("QUALITY", Quality);
     }
 
     public void LoadData()
@@ -62,6 +67,8 @@ public class PlayManage : MonoBehaviour {
             this.IsBoost = false;
         else
             this.IsBoost = true;
+        this.sound = PlayerPrefs.GetFloat("SOUND", 50);
+        this.Quality = PlayerPrefs.GetInt("QUALITY", 2);
     }
 
     void Update()

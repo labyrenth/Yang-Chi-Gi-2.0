@@ -40,9 +40,24 @@ public class PlayerControltwo : MonoBehaviour
 
     public void PlayerInput()
     {
+#if UNITY_EDITOR        //Unity Editor에서만!
         HorizontalInputValue = Input.GetAxisRaw(HorizontalControlName);
-        VerticalInputValue = Input.GetAxisRaw(VerticalControlName);
+        //VerticalInputValue = Input.GetAxisRaw(VerticalControlName);
+#endif
+#if UNITY_ANDROID
+        Vector3 tpos = Input.GetTouch(0).position;
+        if (tpos.x < Screen.width / 2)
+        {
+            HorizontalInputValue = -1;
+        }
+        else if (tpos.x > Screen.width / 2)
+        {
+            HorizontalInputValue = 1;
+        }
+#endif
     }
+
+
 
     void KeyboardInput()
     {
@@ -190,11 +205,11 @@ public class PlayerControltwo : MonoBehaviour
         }
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
+        LeaderSheep();
         GoStraight();
         KeyboardInput();
-        LeaderSheep();
         Score = CalSheepScore();
         CheckSheepType();
         AfterBoost(Time.fixedTime, 60f);
