@@ -41,7 +41,7 @@ public class PlayerControltwo : MonoBehaviour
 
     public void PlayerInput()
     {
-#if UNITY_EDITOR_WINDOW        //Unity Editor에서만!
+#if UNITY_EDITOR       //Unity Editor에서만!
         HorizontalInputValue = Input.GetAxisRaw(HorizontalControlName);
         VerticalInputValue = Input.GetAxisRaw(VerticalControlName);
 #endif

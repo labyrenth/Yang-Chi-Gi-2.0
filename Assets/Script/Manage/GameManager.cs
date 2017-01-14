@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour {
     Text UItext;
     Text UIscore;
     GameObject EndScreen;
+    GameObject Endtext;
+    GameObject Readytext;
     GameObject Player;
 
     RectTransform Compassbar;
@@ -42,9 +45,10 @@ public class GameManager : MonoBehaviour {
         Compassbar = GameObject.Find("Compassbar").GetComponent<RectTransform>();
 
         EndScreen = GameObject.Find("EndScreen");
-        EndScreen.SetActive(false);
         Player = GameObject.Find("PlayerOne");
+        StartCoroutine("ReadyScreen");
         
+        GameObject.Find("");
         PlayerScore = 0;
 
         SheepSpawn(bronzesheepprefab, PlanetScale,initialSheep);
@@ -84,8 +88,7 @@ public class GameManager : MonoBehaviour {
 
     void finishgame()
     {
-        EndScreen.SetActive(true);
-        Player.GetComponent<PlayerControltwo>().IsgameOver = true;
+        StartCoroutine("FinishRoutine");
     }
 
     public void SheepSpawn(GameObject sheepprefab,float scale, int number)   //양을 임의의 위치에 소환하는 메서드.
@@ -134,6 +137,34 @@ public class GameManager : MonoBehaviour {
             Marker.localPosition = new Vector3(Mathf.Clamp(angle * 24, -300, 300), 0, 0);
         else
             Marker.gameObject.SetActive(false);
+    }
+
+    IEnumerator ReadyScreen()
+    {
+        EndScreen.SetActive(true);
+        GameObject Readytext = GameObject.Find("ReadyText");
+        GameObject EndText = GameObject.Find("EndText");
+        EndText.SetActive(false);
+        Player.GetComponent<PlayerControltwo>().IsgameOver = true;
+        Enemy.GetComponent<PlayerControltwo>().IsgameOver = true;
+        yield return new WaitForSeconds(3);
+        Readytext.SetActive(false);
+        EndText.SetActive(true);
+        EndScreen.SetActive(false);
+        Player.GetComponent<PlayerControltwo>().IsgameOver = false;
+        Enemy.GetComponent<PlayerControltwo>().IsgameOver = false;
+        yield return 0;
+    }
+
+    IEnumerator FinishRoutine()
+    {
+        EndScreen.SetActive(true);
+        Player.GetComponent<PlayerControltwo>().IsgameOver = true;
+        Enemy.GetComponent<PlayerControltwo>().IsgameOver = true;
+        PlayManage.Instance.PlayerScore = Player.GetComponent<PlayerControltwo>().Score;
+        PlayManage.Instance.EnemyScore = Enemy.GetComponent<PlayerControltwo>().Score;
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene("Result");
     }
 
     // Update is called once per frame
