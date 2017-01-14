@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour {
     void finishgame()
     {
         EndScreen.SetActive(true);
-        Time.timeScale = 0f;
+        Player.GetComponent<PlayerControltwo>().IsgameOver = true;
     }
 
     public void SheepSpawn(GameObject sheepprefab,float scale, int number)   //양을 임의의 위치에 소환하는 메서드.

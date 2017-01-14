@@ -7,10 +7,17 @@ public class SettingManager : MonoBehaviour {
 
     public Slider sound;
     public Text soundamount;
+    public Button High;
+    public Button Mid;
+    public Button Low;
+    public Button Reset;
+    public Button ShowDev;
+
     public int quality;
 
 	// Use this for initialization
 	void Start () {
+
         sound = GameObject.Find("Slider").GetComponent<Slider>();
         soundamount = GameObject.Find("ShowSound").GetComponent<Text>();
         this.sound.value = PlayManage.Instance.sound;
@@ -19,6 +26,17 @@ public class SettingManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        soundamount.text = sound.value.ToString("N0");
+        SoundSetting();
 	}
+
+    void SoundSetting()
+    {
+        soundamount.text = sound.value.ToString("N0");
+        PlayManage.Instance.sound = this.sound.value;
+    }
+
+    public void QualitySetting(int q)
+    {
+        PlayManage.Instance.Quality = q;
+    }
 }

@@ -14,7 +14,7 @@ public class PlayManage : MonoBehaviour {
     public float score;
     public float distance;
     public bool IsBoost;
-
+    public float EXP;
     public float sound;
     public int Quality;
 
@@ -52,6 +52,7 @@ public class PlayManage : MonoBehaviour {
             PlayerPrefs.SetInt("INITIALBOOST", 1);
         PlayerPrefs.SetFloat("SOUND", sound);
         PlayerPrefs.SetInt("QUALITY", Quality);
+        PlayerPrefs.SetFloat("EXP", EXP);
     }
 
     public void LoadData()
@@ -69,6 +70,7 @@ public class PlayManage : MonoBehaviour {
             this.IsBoost = true;
         this.sound = PlayerPrefs.GetFloat("SOUND", 50);
         this.Quality = PlayerPrefs.GetInt("QUALITY", 2);
+        this.EXP = PlayerPrefs.GetFloat("EXP", 0);
     }
 
     void Update()
@@ -80,6 +82,4 @@ public class PlayManage : MonoBehaviour {
         }
 #endif
     }
-
-
 }

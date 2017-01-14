@@ -18,7 +18,7 @@ public class PlayerControltwo : MonoBehaviour
     public List<GameObject> SheepList;
 
     //비공개 항목
-
+    public bool IsgameOver;
     string HorizontalControlName;
     string VerticalControlName;
     float HorizontalInputValue;
@@ -36,16 +36,17 @@ public class PlayerControltwo : MonoBehaviour
         this.InitialScore = PlayManage.Instance.score;
         this.mindistance = PlayManage.Instance.distance;
         this.IsBoost = PlayManage.Instance.IsBoost;
+        IsgameOver = false;
     }
 
     public void PlayerInput()
     {
-#if UNITY_EDITOR        //Unity Editor에서만!
+#if UNITY_EDITOR_WINDOW        //Unity Editor에서만!
         HorizontalInputValue = Input.GetAxisRaw(HorizontalControlName);
-        //VerticalInputValue = Input.GetAxisRaw(VerticalControlName);
+        VerticalInputValue = Input.GetAxisRaw(VerticalControlName);
 #endif
 #if UNITY_ANDROID
-        Vector3 tpos = Input.GetTouch(0).position;
+        /*Vector3 tpos = Input.GetTouch(0).position;
         if (tpos.x < Screen.width / 2)
         {
             HorizontalInputValue = -1;
@@ -53,11 +54,9 @@ public class PlayerControltwo : MonoBehaviour
         else if (tpos.x > Screen.width / 2)
         {
             HorizontalInputValue = 1;
-        }
+        }*/
 #endif
     }
-
-
 
     void KeyboardInput()
     {
@@ -207,11 +206,14 @@ public class PlayerControltwo : MonoBehaviour
 
     public void FixedUpdate()
     {
-        LeaderSheep();
-        GoStraight();
-        KeyboardInput();
-        Score = CalSheepScore();
-        CheckSheepType();
-        AfterBoost(Time.fixedTime, 60f);
+        if (IsgameOver == false)
+        {
+            LeaderSheep();
+            GoStraight();
+            KeyboardInput();
+            Score = CalSheepScore();
+            CheckSheepType();
+            AfterBoost(Time.fixedTime, 60f);
+        }
     }
 }
