@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingManager : MonoBehaviour {
+public class SettingManager : ManagerBase {
 
     public Slider sound;
     public Text soundamount;
@@ -12,7 +12,7 @@ public class SettingManager : MonoBehaviour {
     public Button Low;
     public Button Reset;
     public Button ShowDev;
-
+    public GameObject Warning;
     public int quality;
 
 	// Use this for initialization
@@ -20,6 +20,9 @@ public class SettingManager : MonoBehaviour {
 
         sound = GameObject.Find("Slider").GetComponent<Slider>();
         soundamount = GameObject.Find("ShowSound").GetComponent<Text>();
+        Warning = GameObject.Find("Warning");
+
+        this.Warning.SetActive(false);
         this.sound.value = PlayManage.Instance.sound;
         this.quality = PlayManage.Instance.Quality;
 	}
@@ -38,5 +41,20 @@ public class SettingManager : MonoBehaviour {
     public void QualitySetting(int q)
     {
         PlayManage.Instance.Quality = q;
+    }
+
+    public void ActiveObject(GameObject target)
+    {
+        target.SetActive(true);
+    }
+
+    public void UnActiveObject(GameObject target)
+    {
+        target.SetActive(false);
+    }
+
+    public void DeleteAllData()
+    {
+        PlayManage.Instance.ResetData();
     }
 }

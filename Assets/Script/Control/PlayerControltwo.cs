@@ -44,9 +44,8 @@ public class PlayerControltwo : MonoBehaviour
 #if UNITY_EDITOR       //Unity Editor에서만!
         HorizontalInputValue = Input.GetAxisRaw(HorizontalControlName);
         VerticalInputValue = Input.GetAxisRaw(VerticalControlName);
-#endif
-#if UNITY_ANDROID
-        /*Vector3 tpos = Input.GetTouch(0).position;
+#elif UNITY_ANDROID
+        Vector3 tpos = Input.GetTouch(0).position;
         if (tpos.x < Screen.width / 2)
         {
             HorizontalInputValue = -1;
@@ -54,7 +53,7 @@ public class PlayerControltwo : MonoBehaviour
         else if (tpos.x > Screen.width / 2)
         {
             HorizontalInputValue = 1;
-        }*/
+        }
 #endif
     }
 

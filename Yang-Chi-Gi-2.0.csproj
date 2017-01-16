@@ -84,6 +84,7 @@
     <Compile Include="Assets\Script\Manage\FadeInOut.cs" />
     <Compile Include="Assets\Script\Manage\GameManager.cs" />
     <Compile Include="Assets\Script\Manage\LobbyManager.cs" />
+    <Compile Include="Assets\Script\Manage\ManagerBase.cs" />
     <Compile Include="Assets\Script\Manage\Marker.cs" />
     <Compile Include="Assets\Script\Manage\PlayManage.cs" />
     <Compile Include="Assets\Script\Manage\ResultManager.cs" />

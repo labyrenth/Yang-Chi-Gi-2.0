@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class PlayManage : MonoBehaviour {
+public class PlayManage : ManagerBase {
 
     public static PlayManage Instance;
+    public Image FadeImage;
 
     public string playerID;
     public int playerlevel;
@@ -33,13 +35,24 @@ public class PlayManage : MonoBehaviour {
         {
             Destroy(this.gameObject);   //싱글톤 오브젝트가 있을경우 다른 오브젝트를 제거.
         }
-        
+        SearchFadeImage();
+        StartCoroutine(FadeIn(FadeImage));
     }
 
-    public void LoadScene(string name)
+    public IEnumerator LoadScene(string name)
     {
+        IEnumerator FO = FadeOut(FadeImage);
+        StartCoroutine(FO);
+        yield return new WaitUntil( () => FO.MoveNext() == false);
         SceneManager.LoadScene(name);
     }
+
+    public void SearchFadeImage()
+    {
+        FadeImage = GameObject.FindGameObjectWithTag("Fadescreen").GetComponent<Image>();
+    }
+
+
 
     public void SaveData()
     {
@@ -74,6 +87,11 @@ public class PlayManage : MonoBehaviour {
         this.sound = PlayerPrefs.GetFloat("SOUND", 50);
         this.Quality = PlayerPrefs.GetInt("QUALITY", 2);
         this.EXP = PlayerPrefs.GetFloat("EXP", 0);
+    }
+
+    public void ResetData()
+    {
+        PlayerPrefs.DeleteAll();
     }
 
     void Update()

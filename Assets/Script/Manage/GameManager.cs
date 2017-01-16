@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : ManagerBase {
 
     GameObject Planet;
     Text UItext;
@@ -47,8 +47,7 @@ public class GameManager : MonoBehaviour {
         EndScreen = GameObject.Find("EndScreen");
         Player = GameObject.Find("PlayerOne");
         StartCoroutine("ReadyScreen");
-        
-        GameObject.Find("");
+       
         PlayerScore = 0;
 
         SheepSpawn(bronzesheepprefab, PlanetScale,initialSheep);
@@ -163,7 +162,7 @@ public class GameManager : MonoBehaviour {
         Enemy.GetComponent<PlayerControltwo>().IsgameOver = true;
         PlayManage.Instance.PlayerScore = Player.GetComponent<PlayerControltwo>().Score;
         PlayManage.Instance.EnemyScore = Enemy.GetComponent<PlayerControltwo>().Score;
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Result");
     }
 

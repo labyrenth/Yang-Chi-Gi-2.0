@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyManager : MonoBehaviour {
+public class LobbyManager : ManagerBase {
 
     public Text playerleveltext;
     public Text playerIDtext;
@@ -17,6 +17,7 @@ public class LobbyManager : MonoBehaviour {
     {
         LobbyInit();
         CalEXP();
+        
     }
 
     void LobbyInit()
