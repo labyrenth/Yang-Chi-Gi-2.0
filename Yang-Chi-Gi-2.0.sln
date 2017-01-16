@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yang-Chi-Gi-2.0", "Yang-Chi-Gi-2.0.csproj", "{4B491AA2-FAD1-669F-70D3-847AB6AC5B20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yang-Chi-Gi-2.0.Editor", "Yang-Chi-Gi-2.0.Editor.csproj", "{72C4A97A-59E9-22BD-9665-091F54B67D82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{4B491AA2-FAD1-669F-70D3-847AB6AC5B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B491AA2-FAD1-669F-70D3-847AB6AC5B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B491AA2-FAD1-669F-70D3-847AB6AC5B20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72C4A97A-59E9-22BD-9665-091F54B67D82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C4A97A-59E9-22BD-9665-091F54B67D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C4A97A-59E9-22BD-9665-091F54B67D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C4A97A-59E9-22BD-9665-091F54B67D82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
