@@ -33,7 +33,10 @@ public class GameManager : ManagerBase {
     public float PlanetScale;
     public float initialtime;
     public int initialSheep;
-    
+
+    float Timer;
+    bool TimerStart;
+
     void Start()
     {
         Planet = GameObject.Find("Planet");
@@ -49,6 +52,8 @@ public class GameManager : ManagerBase {
         StartCoroutine("ReadyScreen");
        
         PlayerScore = 0;
+        Timer = 0;
+        TimerStart = false;
 
         SheepSpawn(bronzesheepprefab, PlanetScale,initialSheep);
         GrassSpawn(grassprefab, 24.5f, 150);
@@ -57,9 +62,9 @@ public class GameManager : ManagerBase {
     void Showremainingtime()
     {
         string timetext;
-        if (initialtime - Time.fixedTime >= 0)
+        if (initialtime - Timer >= 0)
         {
-            timetext = "Left Time : " + (initialtime - Time.fixedTime).ToString("N0");       //Tostring뒤에 붙은 N0는 소수점 표기를 안한다는거.
+            timetext = "Left Time : " + (initialtime - Timer).ToString("N0");       //Tostring뒤에 붙은 N0는 소수점 표기를 안한다는거.
         }
         else
         {
@@ -152,6 +157,7 @@ public class GameManager : ManagerBase {
         EndScreen.SetActive(false);
         Player.GetComponent<PlayerControltwo>().IsgameOver = false;
         Enemy.GetComponent<PlayerControltwo>().IsgameOver = false;
+        TimerStart = true;
         yield return 0;
     }
 
@@ -166,10 +172,17 @@ public class GameManager : ManagerBase {
         SceneManager.LoadScene("Result");
     }
 
+    void TimerSet()
+    {
+        if(TimerStart)
+            Timer += Time.deltaTime;
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
         Showremainingtime();
+        TimerSet();
         ShowMyScore();
         ShowNegativeObjectInCompassbar(Player,Enemy, NegativeMarketPrefab);
         for(int i = 0; i<SheepList.Count; i++)
