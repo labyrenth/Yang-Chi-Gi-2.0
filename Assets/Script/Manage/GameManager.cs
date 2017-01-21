@@ -27,12 +27,17 @@ public class GameManager : ManagerBase {
     public RectTransform positiveMarkerPrefab;
     public RectTransform NegativeMarketPrefab;
 
+    public Camera mainCamera;
+
     public List<GameObject> SheepList;
+
     public List<GameObject> grassprefab;
     public List<RectTransform> sheepMarker;
     public float PlanetScale;
     public float initialtime;
     public int initialSheep;
+
+    public int i;
 
     float Timer;
     bool TimerStart;
@@ -126,8 +131,8 @@ public class GameManager : ManagerBase {
         Vector3 PO = MainObject.transform.position;
         Vector3 TO = TargetObject.transform.position;
         Vector3 PTVector = TO - PO;
-        angle = Vector3.Dot(Player.transform.right, PTVector);    //플레이어의 오른쪽 벡터를 기준으로 내적.
-        Marker.localPosition = new Vector3(Mathf.Clamp(angle * 15, -300, 300), 0, 0);
+        angle = Vector3.Dot(MainObject.transform.right, PTVector);    //플레이어의 오른쪽 벡터를 기준으로 내적.
+        Marker.localPosition = new Vector3(Mathf.Clamp(angle * 15, -250, 250), 0, 0);
     }
 
     void ShowPositiveObjectInCompassbar(GameObject MainObject, GameObject TargetObject, RectTransform Marker)
@@ -136,11 +141,8 @@ public class GameManager : ManagerBase {
         Vector3 PO = MainObject.transform.position + new Vector3(0, 1, 0);
         Vector3 TO = TargetObject.transform.position + new Vector3(0, 1, 0);
         Vector3 PTVector = TO - PO;
-        angle = Vector3.Dot(Player.transform.right, PTVector);    //플레이어의 오른쪽 벡터를 기준으로 내적.
-        if (TargetObject.GetComponent<SheepControltwo>().Master == null)
-            Marker.localPosition = new Vector3(Mathf.Clamp(angle * 24, -300, 300), 0, 0);
-        else
-            Marker.gameObject.SetActive(false);
+        angle = Vector3.Dot(MainObject.transform.right, PTVector);    //플레이어의 오른쪽 벡터를 기준으로 내적.
+        Marker.localPosition = new Vector3(Mathf.Clamp(angle * 24, -250, 250), 0, 0);
     }
 
     IEnumerator ReadyScreen()
@@ -178,16 +180,24 @@ public class GameManager : ManagerBase {
             Timer += Time.deltaTime;
     }
 
+    public void FindAndRemoveAtSheepList(GameObject target)
+    {
+        i = SheepList.FindIndex(x => x.gameObject == target);
+        SheepList.RemoveAt(i);
+        sheepMarker[i].gameObject.SetActive(false);
+        sheepMarker.RemoveAt(i);
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
         Showremainingtime();
         TimerSet();
         ShowMyScore();
-        ShowNegativeObjectInCompassbar(Player,Enemy, NegativeMarketPrefab);
+        ShowNegativeObjectInCompassbar(mainCamera.gameObject,Enemy, NegativeMarketPrefab);
         for(int i = 0; i<SheepList.Count; i++)
         {
-            ShowPositiveObjectInCompassbar(Player, SheepList[i], sheepMarker[i]);
+            ShowPositiveObjectInCompassbar(mainCamera.gameObject, SheepList[i], sheepMarker[i]);
         }
     }
 }

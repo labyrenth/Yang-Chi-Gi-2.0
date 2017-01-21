@@ -16,6 +16,9 @@ public class PlayerControltwo : MonoBehaviour
     public bool IsBoost;
     public GameManager GM;
     public List<GameObject> SheepList;
+    public GameObject HQ;
+    public GameObject TargetSheep;
+    public bool IsSearchPhase;
 
     //비공개 항목
     public bool IsgameOver;
@@ -37,6 +40,8 @@ public class PlayerControltwo : MonoBehaviour
         this.mindistance = PlayManage.Instance.distance;
         this.IsBoost = PlayManage.Instance.IsBoost;
         IsgameOver = false;
+        string HQname = "HQ" + PlayerNumber.ToString();
+        HQ = GameObject.Find(HQname);
     }
 
     public void PlayerInput()
@@ -86,6 +91,9 @@ public class PlayerControltwo : MonoBehaviour
 
     void GoStraight()
     {
+        Vector3 targetvector = TargetSheep.transform.position - this.transform.position;
+        Quaternion targetrotation = Quaternion.LookRotation(new Vector3(targetvector.x, targetvector.y, targetvector.z),this.transform.up) ;
+        this.transform.rotation = Quaternion.Slerp(this.transform.rotation,targetrotation,turnspeed * Time.deltaTime);
         this.transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
@@ -189,7 +197,6 @@ public class PlayerControltwo : MonoBehaviour
             {
                 break;
             }
-
         }
     }
 
@@ -203,16 +210,69 @@ public class PlayerControltwo : MonoBehaviour
         }
     }
 
+    void SearchClosestSheep()
+    {
+        int Mincount = 0;
+        float distance1;
+        float distance2;
+        if (GM.SheepList.Count != 0)
+        {
+            for (int i = 1; i <= GM.SheepList.Count - 1; i++)
+            {
+                distance1 = Vector3.Distance(this.transform.position, GM.SheepList[Mincount].transform.position);
+                distance2 = Vector3.Distance(this.transform.position, GM.SheepList[i].transform.position);
+                if (distance1 <= distance2)
+                {
+                    continue;
+                }
+                else if (distance2 < distance1)
+                {
+                    Mincount = i;
+                }
+            }
+            TargetSheep = GM.SheepList[Mincount];
+        }
+        else
+        {
+            TargetSheep = HQ;
+        }
+        
+    }
+
+    public void SearchPhaseShift()
+    {
+        if (IsSearchPhase == true)
+        {
+            IsSearchPhase = false;
+            TargetSheep = HQ;
+        }
+        else if (IsSearchPhase == false)
+        {
+            SearchClosestSheep();
+            IsSearchPhase = true;
+        }
+    }
+
     public void FixedUpdate()
     {
         if (IsgameOver == false)
         {
             LeaderSheep();
-            GoStraight();
+            
             KeyboardInput();
             Score = CalSheepScore();
-            CheckSheepType();
+            //CheckSheepType();
             AfterBoost(Time.fixedTime, 60f);
+
+            if (IsSearchPhase && TargetSheep == null)
+            {
+                SearchClosestSheep();
+            }
+
+            if (TargetSheep != null)
+            {
+                GoStraight();
+            }
         }
     }
 }

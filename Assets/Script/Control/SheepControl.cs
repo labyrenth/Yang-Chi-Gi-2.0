@@ -15,7 +15,9 @@ public class SheepControl : MonoBehaviour
     // 공개 항목
     public GameObject leader;
     public GameObject Master;
-    
+    public PlayerControltwo player1;
+    public PlayerControltwo player2;
+
     public int distance_permitted;
     public float speed;
     public float runspeed;
@@ -35,6 +37,8 @@ public class SheepControl : MonoBehaviour
         {
             AddLists();
         }
+        player1 = GameObject.Find("PlayerOne").GetComponent<PlayerControltwo>();
+        player2 = GameObject.Find("PlayerTwo").GetComponent<PlayerControltwo>();
     }
 
     void FollowLeader()
@@ -74,6 +78,7 @@ public class SheepControl : MonoBehaviour
         if (col.gameObject.tag == "Head" && col.gameObject != this.Master)
         {
             CheckOwner(col.gameObject);
+            ResetTarget();
         }
     }
 
@@ -115,6 +120,18 @@ public class SheepControl : MonoBehaviour
         {
             rotations.Add(leader.transform.rotation);
             positions.Add(leader.transform.position);
+        }
+    }
+
+    void ResetTarget()
+    {
+        if (player1.TargetSheep == this.gameObject)
+        {
+            player1.TargetSheep = null;
+        }
+        if (player2.TargetSheep == this.gameObject)
+        {
+            player2.TargetSheep = null;
         }
     }
 

@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Script\Control\CameraControl.cs" />
     <Compile Include="Assets\Script\Control\PlanetGravity.cs" />
     <Compile Include="Assets\Script\Control\PlayerControl.cs" />
     <Compile Include="Assets\Script\Control\PlayerControltwo.cs" />

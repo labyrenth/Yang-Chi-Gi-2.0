@@ -100,7 +100,7 @@ public class ResultManager : ManagerBase{
 #if UNITY_EDITOR
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
 #elif UNITY_ANDROID
-        //yield return new WaitUntil(() => Input.GetTouch(0).tapCount > 0);
+        yield return new WaitUntil(() => Input.GetTouch(0).tapCount > 0);
 #endif
         StartCoroutine(PlayManage.Instance.LoadScene("Lobby"));
     }
