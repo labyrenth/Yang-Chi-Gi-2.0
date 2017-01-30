@@ -163,7 +163,7 @@ public class PlayerControl : MonoBehaviour
                 SheepControltwo tempsheepcontrol = newsheep.GetComponent<SheepControltwo>();
                 newsheep.transform.position = SheepList[i].transform.position;
                 newsheep.transform.rotation = SheepList[i].transform.rotation;
-                tempsheepcontrol.leader = SheepList[i].GetComponent<SheepControltwo>().leader;
+                //tempsheepcontrol.leader = SheepList[i].GetComponent<SheepControltwo>().leader;
                 tempsheepcontrol.Master = SheepList[i].GetComponent<SheepControltwo>().Master;
                 tempsheepcontrol.SS = SheepState.HAVEOWNER;
                 GameObject tempsheep = SheepList[i];
@@ -176,14 +176,15 @@ public class PlayerControl : MonoBehaviour
             {
                 GameObject followsheep;
                 followsheep = SheepList[i + 1];
-                if (i == 0)
-                    followsheep.GetComponent<SheepControltwo>().leader = this.gameObject;
+                /*if (i == 0)
+                    //followsheep.GetComponent<SheepControltwo>().leader = this.gameObject;
                 else
-                    followsheep.GetComponent<SheepControltwo>().leader = SheepList[i - 1];
+                    //followsheep.GetComponent<SheepControltwo>().leader = SheepList[i - 1];
                 GameObject tempsheep = SheepList[i];
                 SheepList.RemoveAt(i);
                 tempsheep.SetActive(false);
                 ChangeCount--;
+                */
             }
             if (ChangeCount == 0)
             {

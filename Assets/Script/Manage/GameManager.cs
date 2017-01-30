@@ -9,16 +9,21 @@ public class GameManager : ManagerBase {
     GameObject Planet;
     Text UItext;
     Text UIscore;
+    Text UIcurrentSheep;
+    Text UIEnemyScore;
     GameObject EndScreen;
-    GameObject Endtext;
-    GameObject Readytext;
-    GameObject Player;
 
+    GameObject Enemy;
+    Button SelectedButton;
+    Button SkillFireButton;
     RectTransform Compassbar;
 
-    float PlayerScore;
+    float SheepCount;
+    public float PlayerScore;
+    public float EnemyScore;
+    public int PlayerNumber;
 
-    public GameObject Enemy;
+    public GameObject Player;
     public GameObject Sheephorde;
     public GameObject bronzesheepprefab;
     public GameObject silversheepprefab;
@@ -26,42 +31,64 @@ public class GameManager : ManagerBase {
     public GameObject BackGround;
     public RectTransform positiveMarkerPrefab;
     public RectTransform NegativeMarketPrefab;
-
-    public Camera mainCamera;
+    public SkillDataBase SkillDB;
+    public CameraControl mainCamera;
 
     public List<GameObject> SheepList;
-
+    public List<GameButtonEvent> SkillButtonList;
     public List<GameObject> grassprefab;
     public List<RectTransform> sheepMarker;
+
     public float PlanetScale;
     public float initialtime;
     public int initialSheep;
-
-    public int i;
-
+    
+    int index;
     float Timer;
+    public float skillcooltimer = 10f;
     bool TimerStart;
+    int Skillindexcount;
 
-    void Start()
+    public override void Awake()
     {
+        base.Awake();
         Planet = GameObject.Find("Planet");
         Sheephorde = GameObject.Find("Sheephorde");
         BackGround = GameObject.Find("BackGround");
 
+        if (PlayerNumber == 1)
+        {
+            Player = GameObject.Find("PlayerOne");
+            Enemy = GameObject.Find("PlayerTwo");
+        }
+        else if (PlayerNumber == 2)
+        {
+            Player = GameObject.Find("PlayerTwo");
+            Enemy = GameObject.Find("PlayerOne");
+        }
+
+        //UI관련 초기화.
         UItext = GameObject.Find("TimeText").GetComponent<Text>();
         UIscore = GameObject.Find("ScoreText").GetComponent<Text>();
+        UIcurrentSheep = GameObject.Find("CurrentSheepText").GetComponent<Text>();
+        UIEnemyScore = GameObject.Find("EnemyScoreText").GetComponent<Text>();
         Compassbar = GameObject.Find("Compassbar").GetComponent<RectTransform>();
-
         EndScreen = GameObject.Find("EndScreen");
-        Player = GameObject.Find("PlayerOne");
+        SkillButtonList.Add(GameObject.Find("SkillButton1").GetComponent<GameButtonEvent>());
+        SkillButtonList.Add(GameObject.Find("SkillButton2").GetComponent<GameButtonEvent>());
+        SkillFireButton = GameObject.Find("SkillFire").GetComponent<Button>();
         StartCoroutine("ReadyScreen");
-       
-        PlayerScore = 0;
+
+        SheepCount = 0;
         Timer = 0;
         TimerStart = false;
 
-        SheepSpawn(bronzesheepprefab, PlanetScale,initialSheep);
+        //오브젝트 생성.
+        SheepSpawn(bronzesheepprefab, PlanetScale, initialSheep);
         GrassSpawn(grassprefab, 24.5f, 150);
+        //스킬 관련 초기화.
+        SkillDB = this.gameObject.GetComponent<SkillDataBase>();
+        Skillindexcount = 0;
     }
 
     void Showremainingtime()
@@ -80,7 +107,7 @@ public class GameManager : ManagerBase {
         UItext.text = timetext;
     }
 
-    void ShowMyScore()
+    void ShowScore()
     {
         string scoretext;
         PlayerScore = Player.GetComponent<PlayerControltwo>().Score;
@@ -95,6 +122,44 @@ public class GameManager : ManagerBase {
         UIscore.text = scoretext;
     }
 
+    void ShowMySheep()
+    {
+        string scoretext;
+        SheepCount = Player.GetComponent<PlayerControltwo>().SheepCount;
+        if (SheepCount >= 10)
+        {
+            scoretext = "Current Sheep : " + SheepCount;
+        }
+        else
+        {
+            scoretext = "Current Sheep : 0" + SheepCount;
+        }
+        UIcurrentSheep.text = scoretext;
+    }
+
+    void ShowEnemyScore()
+    {
+        string scoretext;
+        EnemyScore = Enemy.GetComponent<PlayerControltwo>().Score;
+        if (EnemyScore >= 10)
+        {
+            scoretext = "Enemy Score : " + EnemyScore;
+        }
+        else
+        {
+            scoretext = "Enemy Score : 0" + EnemyScore;
+        }
+        UIEnemyScore.text = scoretext;
+    }
+
+    void ShowUIText()
+    {
+        Showremainingtime();
+        ShowScore();
+        ShowEnemyScore();
+        ShowMySheep();
+    }
+
     void finishgame()
     {
         StartCoroutine("FinishRoutine");
@@ -105,11 +170,18 @@ public class GameManager : ManagerBase {
         for (int i = 0; i < number; i++)
         {
             Vector3 newposition = Random.onUnitSphere * scale;
-            GameObject tempSheep = Instantiate(sheepprefab, newposition, Quaternion.Euler(0, 0, 0), Sheephorde.transform);
-            RectTransform tempMarker = Instantiate(positiveMarkerPrefab, Compassbar);
-            tempSheep.transform.rotation = Quaternion.FromToRotation(tempSheep.transform.up, newposition) * tempSheep.transform.rotation;
-            SheepList.Add(tempSheep);
-            sheepMarker.Add(tempMarker);
+            if (Vector3.Distance(newposition, Player.transform.position) > 2 && Vector3.Distance(newposition, Enemy.transform.position) > 2)
+            {
+                GameObject tempSheep = Instantiate(sheepprefab, newposition, Quaternion.Euler(0, 0, 0), Sheephorde.transform);
+                RectTransform tempMarker = Instantiate(positiveMarkerPrefab, Compassbar);
+                tempSheep.transform.rotation = Quaternion.FromToRotation(tempSheep.transform.up, newposition) * tempSheep.transform.rotation;
+                SheepList.Add(tempSheep);
+                sheepMarker.Add(tempMarker);
+            }
+            else
+            {
+                i--;
+            }
         }
     }
 
@@ -168,36 +240,117 @@ public class GameManager : ManagerBase {
         EndScreen.SetActive(true);
         Player.GetComponent<PlayerControltwo>().IsgameOver = true;
         Enemy.GetComponent<PlayerControltwo>().IsgameOver = true;
-        PlayManage.Instance.PlayerScore = Player.GetComponent<PlayerControltwo>().Score;
-        PlayManage.Instance.EnemyScore = Enemy.GetComponent<PlayerControltwo>().Score;
+        PlayManage.Instance.PlayerScore = Player.GetComponent<PlayerControltwo>().SheepCount;
+        PlayManage.Instance.EnemyScore = Enemy.GetComponent<PlayerControltwo>().SheepCount;
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Result");
     }
 
     void TimerSet()
     {
-        if(TimerStart)
+        if (TimerStart)
+        {
             Timer += Time.deltaTime;
+            SkillCooltime();
+        }
     }
 
     public void FindAndRemoveAtSheepList(GameObject target)
     {
-        i = SheepList.FindIndex(x => x.gameObject == target);
-        SheepList.RemoveAt(i);
-        sheepMarker[i].gameObject.SetActive(false);
-        sheepMarker.RemoveAt(i);
+        index = SheepList.FindIndex(x => x.gameObject == target);
+        SheepList.RemoveAt(index);
+        sheepMarker[index].gameObject.SetActive(false);
+        sheepMarker.RemoveAt(index);
     }
+
+    public void SkillButtonAction(Button targetbutton)
+    {
+        if (SelectedButton == null)
+        {
+            SelectedButton = targetbutton;
+            SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillButtonActive();
+        }
+        else
+        {
+            if (SelectedButton == targetbutton)
+            {
+                SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillButtonActive();
+                SelectedButton = null;
+            }
+            else
+            {
+                SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillButtonActive();
+                SelectedButton = targetbutton;
+                SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillButtonActive();
+            }
+        }
+    }
+
+    void SkillCooltime()
+    {
+        if (TimerStart && skillcooltimer >= 0)
+        {
+            skillcooltimer -= Time.deltaTime;
+        }
+        if (skillcooltimer < 0)
+        {
+            if (!SkillButtonList[0].IsSkillCanActive || !SkillButtonList[1].IsSkillCanActive)
+            {
+                if (!SkillButtonList[0].IsSkillCanActive)
+                {
+                    SkillButtonList[0].IsSkillCanActive = true;
+                    SkillDB.ButtonIconInRandomList(SkillButtonList[0].gameObject.GetComponent<Button>(), Skillindexcount);
+                    CalSkillIndexCount();
+                    skillcooltimer = 10f;
+
+                }
+                else if (!SkillButtonList[1].IsSkillCanActive)
+                {
+                    SkillButtonList[1].IsSkillCanActive = true;
+                    SkillDB.ButtonIconInRandomList(SkillButtonList[1].gameObject.GetComponent<Button>(), Skillindexcount);
+                    CalSkillIndexCount();
+                    skillcooltimer = 10f;
+                }
+            }
+        }
+    }
+
+    void CalSkillIndexCount()
+    {
+            if (Skillindexcount < SkillDB.SkillIndexList.Count-1)
+                Skillindexcount++;
+            else
+                Skillindexcount = 0;
+    }
+
+
+    public void SkillFireAction()
+    {
+        if (SelectedButton.gameObject.GetComponent<GameButtonEvent>() == null || !SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive)
+            return;
+        else if(SelectedButton.gameObject.GetComponent<GameButtonEvent>() != null && SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive)
+        {
+            SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive = false;
+        }
+    }//수정필요
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Showremainingtime();
+        ShowUIText();
         TimerSet();
-        ShowMyScore();
         ShowNegativeObjectInCompassbar(mainCamera.gameObject,Enemy, NegativeMarketPrefab);
         for(int i = 0; i<SheepList.Count; i++)
         {
             ShowPositiveObjectInCompassbar(mainCamera.gameObject, SheepList[i], sheepMarker[i]);
+        }
+        if (SelectedButton == null)
+        {
+            SkillFireButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            SkillFireButton.gameObject.SetActive(true);
         }
     }
 }

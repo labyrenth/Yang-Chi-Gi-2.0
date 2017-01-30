@@ -7,7 +7,7 @@ using UnityEngine;
 public class SheepControltwo : MonoBehaviour
 {
     // 공개 항목
-    public GameObject leader;
+    //public GameObject leader;
     public GameObject Master;
 
     public GameObject player1;
@@ -24,7 +24,7 @@ public class SheepControltwo : MonoBehaviour
     {
         player1 = GameObject.Find("PlayerOne");
         player2 = GameObject.Find("PlayerTwo");
-        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+        GM = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
     }
 
     void OnTriggerEnter(Collider col)       //부딪힌 오브젝트의 종류에 따른 반응 정리
@@ -41,15 +41,23 @@ public class SheepControltwo : MonoBehaviour
         if (SS == SheepState.NOOWNER)
         {
             this.Master = target;
-            ChangeLeader(target);
+            //ChangeLeader(target);
             SS = SheepState.HAVEOWNER;
             Master.GetComponent<PlayerControltwo>().AddSheepList(this.gameObject);
             GM.FindAndRemoveAtSheepList(this.gameObject);
         }
         else
         {
-            ChangeLeader(target);
-            Master.GetComponent<PlayerControltwo>().ChangeMaster(this.gameObject, target);
+            //ChangeLeader(target);
+            if (Master.gameObject.tag == "Head")
+            {
+                Master.GetComponent<PlayerControltwo>().ChangeMaster(this.gameObject, target);
+            }
+            else if (Master.gameObject.tag == "Dog")
+            {
+                Master.GetComponent<Dog>().ChangeMaster(this.gameObject, target);
+                ResetTarget(target.gameObject);
+            }
         }
     }
 
@@ -58,7 +66,7 @@ public class SheepControltwo : MonoBehaviour
         col.GetComponent<PlayerControltwo>().TargetSheep = null;
     }
 
-    void ChangeLeader(GameObject target)
+    /*void ChangeLeader(GameObject target)
     {
         if (target.GetComponent<PlayerControltwo>().SheepList.Count == 0)
         {
@@ -68,6 +76,6 @@ public class SheepControltwo : MonoBehaviour
         {
             this.leader = target.GetComponent<PlayerControltwo>().SheepList[target.GetComponent<PlayerControltwo>().SheepList.Count - 1];
         }
-    }
+    }*/
 
 }

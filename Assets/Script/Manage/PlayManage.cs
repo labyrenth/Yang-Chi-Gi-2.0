@@ -52,8 +52,6 @@ public class PlayManage : ManagerBase {
         FadeImage = GameObject.FindGameObjectWithTag("Fadescreen").GetComponent<Image>();
     }
 
-
-
     public void SaveData()
     {
         PlayerPrefs.SetString("PLAYERID", playerID);
@@ -75,8 +73,8 @@ public class PlayManage : ManagerBase {
     {
         this.playerID = PlayerPrefs.GetString("PLAYERID", "Beginner");
         this.playerlevel = PlayerPrefs.GetInt("PLAYERLEVEL", 1);
-        this.speed = PlayerPrefs.GetFloat("INITIALSPEED",15);
-        this.angle = PlayerPrefs.GetFloat("INITIALANGLE", 10);
+        this.speed = PlayerPrefs.GetFloat("INITIALSPEED",5);
+        this.angle = PlayerPrefs.GetFloat("INITIALANGLE", 5);
         this.score = PlayerPrefs.GetFloat("INITIALSCORE", 0);
         this.distance = PlayerPrefs.GetFloat("INITIALDISTANCE", 5);
         int boostcheck = PlayerPrefs.GetInt("INITIALBOOST", 0);

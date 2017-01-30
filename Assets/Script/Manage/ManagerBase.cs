@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ManagerBase : FadeInOut {
 
-    private void Awake()
+    public virtual void Awake()
     {
         PlayManage.Instance.SearchFadeImage();
         StartCoroutine(PlayManage.Instance.FadeIn(PlayManage.Instance.FadeImage));
