@@ -78,8 +78,8 @@ public class PlayerControl : MonoBehaviour
 
         for (int temp = index; temp <= SheepList.Count - 1; temp++)
         {
-            SheepList[temp].GetComponent<SheepControltwo>().Master = target;
-            target.GetComponent<PlayerControltwo>().SheepList.Add(this.SheepList[temp]);
+            SheepList[temp].GetComponent<SheepControlThree>().Master = target;
+            target.GetComponent<PlayerControlThree>().SheepList.Add(this.SheepList[temp]);
         }
         SheepList.RemoveRange(index, SheepList.Count - index);
     }
@@ -120,7 +120,7 @@ public class PlayerControl : MonoBehaviour
         float calscore = InitialScore;
         foreach (GameObject i in SheepList)
         {
-            calscore += i.GetComponent<SheepControltwo>().SheepScore;
+            calscore += i.GetComponent<SheepControlThree>().SheepScore;
         }
         return calscore;
     }
@@ -160,11 +160,11 @@ public class PlayerControl : MonoBehaviour
             if (ChangeCount == 5 && SheepList[i].tag == targettag)
             {
                 GameObject newsheep = Instantiate(targetSheep, GM.Sheephorde.transform);
-                SheepControltwo tempsheepcontrol = newsheep.GetComponent<SheepControltwo>();
+                SheepControlThree tempsheepcontrol = newsheep.GetComponent<SheepControlThree>();
                 newsheep.transform.position = SheepList[i].transform.position;
                 newsheep.transform.rotation = SheepList[i].transform.rotation;
                 //tempsheepcontrol.leader = SheepList[i].GetComponent<SheepControltwo>().leader;
-                tempsheepcontrol.Master = SheepList[i].GetComponent<SheepControltwo>().Master;
+                tempsheepcontrol.Master = SheepList[i].GetComponent<SheepControlThree>().Master;
                 tempsheepcontrol.SS = SheepState.HAVEOWNER;
                 GameObject tempsheep = SheepList[i];
                 SheepList[i] = newsheep;

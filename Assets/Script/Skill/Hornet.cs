@@ -10,7 +10,9 @@ public class Hornet : SkillBase {
 	public override void Start ()
     {
         base.Start();
+        Parent = this.gameObject.GetComponentsInParent<Transform>()[1];
         StartCoroutine(HornetLife());
+        SS = SkillState.ACTIVATED;
 	}
 
     void HornetAction(GameObject Target)
@@ -18,7 +20,7 @@ public class Hornet : SkillBase {
         float slowspeed = Speed / 10;
         float Gospeed;
 
-        if (!Target.GetComponent<PlayerControltwo>().InHQ)
+        if (Target != null && !Target.GetComponent<PlayerControlThree>().InHQ )
         {
             Gospeed = Speed;
         }
@@ -27,7 +29,7 @@ public class Hornet : SkillBase {
             Gospeed = slowspeed;
         }
         
-        if (IsLaunched)
+        if (SS == SkillState.LAUNCHED)
         {
             Quaternion targetrotation = Quaternion.LookRotation(this.transform.position - Target.transform.position);
             Parent.rotation = Quaternion.RotateTowards(Parent.rotation, targetrotation, Gospeed * Time.deltaTime);
@@ -37,7 +39,7 @@ public class Hornet : SkillBase {
     IEnumerator HornetLife()
     {
         yield return new WaitForSeconds(5f);
-        IsLaunched = true;
+        SS = SkillState.LAUNCHED;
         yield return new WaitForSeconds(10f);
         Parent.gameObject.SetActive(false);
     }
@@ -46,12 +48,22 @@ public class Hornet : SkillBase {
     {
         if (other.gameObject.tag == "Head" && other.gameObject == TG)
         {
-            if (!other.gameObject.GetComponent<PlayerControltwo>().InHQ)
+            if (!other.gameObject.GetComponent<PlayerControlThree>().InHQ)
             {
-                other.gameObject.GetComponent<PlayerControltwo>().StartCoroutine(other.gameObject.GetComponent<PlayerControltwo>().HornetAttack());
+                other.gameObject.GetComponent<PlayerControlThree>().StartCoroutine(other.gameObject.GetComponent<PlayerControlThree>().HornetAttack());
             }
             Parent.gameObject.SetActive(false);
         }
+    }
+
+    public override bool SetInstance(GameObject IO, GameObject ITG)
+    {
+        return base.SetInstance(IO, ITG);
+    }
+
+    public override bool FindSkillNeedCameraFix()
+    {
+        return base.FindSkillNeedCameraFix();
     }
 
     private void Update()

@@ -52,9 +52,6 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -70,9 +67,6 @@
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Purchasing.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.VR">
       <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
     </Reference>
@@ -87,10 +81,12 @@
     <Compile Include="Assets\Script\Control\CameraControl.cs" />
     <Compile Include="Assets\Script\Control\HQControl.cs" />
     <Compile Include="Assets\Script\Control\PlanetGravity.cs" />
-    <Compile Include="Assets\Script\Control\PlayerControl.cs" />
-    <Compile Include="Assets\Script\Control\PlayerControltwo.cs" />
-    <Compile Include="Assets\Script\Control\SheepControl.cs" />
-    <Compile Include="Assets\Script\Control\SheepControltwo.cs" />
+    <Compile Include="Assets\Script\Control\PlayerControl\PlayerControl.cs" />
+    <Compile Include="Assets\Script\Control\PlayerControl\PlayerControlThree.cs" />
+    <Compile Include="Assets\Script\Control\PlayerControl\PlayerControltwo.cs" />
+    <Compile Include="Assets\Script\Control\SheepControl\SheepControl.cs" />
+    <Compile Include="Assets\Script\Control\SheepControl\SheepControlThree.cs" />
+    <Compile Include="Assets\Script\Control\SheepControl\SheepControltwo.cs" />
     <Compile Include="Assets\Script\Effect\FadeInOut.cs" />
     <Compile Include="Assets\Script\Effect\Marker.cs" />
     <Compile Include="Assets\Script\Manage\GameManager.cs" />
@@ -99,6 +95,7 @@
     <Compile Include="Assets\Script\Manage\PlayManage.cs" />
     <Compile Include="Assets\Script\Manage\ResultManager.cs" />
     <Compile Include="Assets\Script\Manage\SettingManager.cs" />
+    <Compile Include="Assets\Script\Skill\Accel.cs" />
     <Compile Include="Assets\Script\Skill\Dog.cs" />
     <Compile Include="Assets\Script\Skill\Donkey.cs" />
     <Compile Include="Assets\Script\Skill\Hornet.cs" />

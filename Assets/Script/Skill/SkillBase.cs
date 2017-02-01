@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SkillState
+{
+    ACTIVATED,
+    LAUNCHED
+}
+
 public class SkillBase : MonoBehaviour {
 
     public GameManager GM;
     public GameObject Owner;
-    public CameraControl maincamera;
-    public Transform SP;        //Skill의 StartingPoint.
+
     public GameObject TG;       //Skill의 Target.
-    public bool IsSkillActive;
-    public bool IsLaunched;
+
+    public SkillState SS;
 
     public Transform Parent;
+
+    public bool IsSkillNeedCameraFix;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -26,9 +33,19 @@ public class SkillBase : MonoBehaviour {
 
     public virtual void Start()
     {
-        Parent = this.gameObject.GetComponentsInParent<Transform>()[1];
-        Parent.rotation = SP.rotation;
-        IsLaunched = false;
+
         GM = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
+    }
+
+    public virtual bool SetInstance(GameObject IO, GameObject ITG)
+    {
+        this.Owner = IO;
+        this.TG = ITG;
+        return ((Owner != null && TG != null) ? true : false);
+    }
+
+    public virtual bool FindSkillNeedCameraFix()
+    {
+        return IsSkillNeedCameraFix;
     }
 }

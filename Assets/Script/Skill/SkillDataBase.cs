@@ -11,7 +11,7 @@ public class SkillDataBase : MonoBehaviour {
 
     void SetRandomNumber(int StartNumber, int EndNumber)
     {
-        while (SkillIndexList.Count <= EndNumber)
+        while (SkillIndexList.Count <= EndNumber - 1)
         {
             int temp = Random.Range(StartNumber, EndNumber + 1);
             bool checknum = false;
@@ -38,7 +38,7 @@ public class SkillDataBase : MonoBehaviour {
     {
         if (SkillPrefab.Count == SkillIcon.Count)
         {
-            SetRandomNumber(0, SkillPrefab.Count-1);
+            SetRandomNumber(1, SkillPrefab.Count-1);
         }
         else
         {

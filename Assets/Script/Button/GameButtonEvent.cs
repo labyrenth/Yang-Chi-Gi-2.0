@@ -16,7 +16,7 @@ public class GameButtonEvent : MonoBehaviour {
 
     public Button B;
     public GameManager GM;
-    public PlayerControltwo PCT;
+    public PlayerControlThree PCT;
     public GameButtonType GBT;
 
     public bool IsthisButtonActive;
@@ -32,7 +32,7 @@ public class GameButtonEvent : MonoBehaviour {
         B = this.gameObject.GetComponent<Button>();
         ButtonText = gameObject.GetComponentInChildren<Text>();
         GM = GameObject.FindGameObjectWithTag("Manager").GetComponent<GameManager>();
-        PCT = GM.Player.GetComponent<PlayerControltwo>();
+        PCT = GM.Player.GetComponent<PlayerControlThree>();
 
         Iconrotation = 0;
 
@@ -50,7 +50,7 @@ public class GameButtonEvent : MonoBehaviour {
             targeticon.gameObject.SetActive(false);
             IsthisButtonActive = false;
             IsSkillCanActive = false;
-            SkillIndex = -1;
+            SkillIndex = 0;
             B.onClick.AddListener(SkillButtonControl);
         }
         else if (GBT == GameButtonType.FIREBUTTON)
@@ -63,15 +63,20 @@ public class GameButtonEvent : MonoBehaviour {
     {
         string searchtext = "Search";
         string backtohome = "Back";
+        string enemytext = "Enemy";
 
         PCT.SearchPhaseShift();
         if (PCT.PS == PlayerState.BACKTOHOME)
         {
             ButtonText.text = backtohome;
         }
-        else if(PCT.PS == PlayerState.SEARCH)
+        else if (PCT.PS == PlayerState.SHEEPSEARCH)
         {
             ButtonText.text = searchtext;
+        }
+        else if (PCT.PS == PlayerState.ENEMYSEARCH)
+        {
+            ButtonText.text = enemytext;
         }
     }
 
@@ -112,6 +117,7 @@ public class GameButtonEvent : MonoBehaviour {
     {
         Iconrotation = 0;
         IsthisButtonActive = !IsthisButtonActive;
+
         targeticon.gameObject.SetActive(IsthisButtonActive);
     }
 

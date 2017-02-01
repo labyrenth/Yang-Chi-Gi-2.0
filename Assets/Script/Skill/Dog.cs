@@ -11,7 +11,6 @@ public enum DogState
 
 public class Dog : SkillBase {
 
-    public SpriteRenderer ArrowImage;
     public DogState DS;
     public List<GameObject> SheepList;
 
@@ -26,26 +25,13 @@ public class Dog : SkillBase {
     public override void Start()
     {
         base.Start();
-        ArrowImage = Parent.gameObject.GetComponentInChildren<SpriteRenderer>();
-        //IsbackTohome = false;
+        Parent = this.gameObject.GetComponentsInParent<Transform>()[1];
         DS = DogState.GO;
-        
-    }
-
-    void CameraAction()
-    {
-        if (Input.GetMouseButton(0) && EventSystem.current.IsPointerOverGameObject() == false)
-        {
-            float xDif = Input.mousePosition.x - Screen.width / 2;
-            float yDif = Input.mousePosition.y - Screen.height / 2;
-            float angle = Mathf.Atan2(xDif, yDif) * Mathf.Rad2Deg;
-            Parent.rotation = Quaternion.AngleAxis(angle, Parent.up); 
-        }
     }
 
     void GoStraight()
     {
-        float betangle = Vector3.Angle(SP.position, this.transform.position);
+        float betangle = Vector3.Angle(Owner.GetComponent<PlayerControlThree>().HQ.transform.position, this.transform.position);
         if (betangle > 90)
         {
             DS = DogState.BACK;
@@ -92,16 +78,16 @@ public class Dog : SkillBase {
 
         for (int temp = index; temp <= SheepList.Count - 1; temp++)
         {
-            SheepList[temp].GetComponent<SheepControltwo>().Master = target;
+            SheepList[temp].GetComponent<SheepControlThree>().Master = target;
             GM.FindAndRemoveAtSheepList(this.SheepList[temp]);
-            target.GetComponent<PlayerControltwo>().SheepList.Add(this.SheepList[temp]);
+            target.GetComponent<PlayerControlThree>().SheepList.Add(this.SheepList[temp]);
         }
         SheepList.RemoveRange(index, SheepList.Count - index);
     }
 
     public override void SkillAction(Collider other)
     {
-        if (other.gameObject.tag == "BronzeSheep" && other.GetComponent<SheepControltwo>().SS != SheepState.HAVEOWNER)
+        if (other.gameObject.tag == "BronzeSheep" && other.GetComponent<SheepControlThree>().SS != SheepState.HAVEOWNER)
         {
             bool IsthisSheepInList = false;
             foreach (GameObject i in this.SheepList)
@@ -113,8 +99,8 @@ public class Dog : SkillBase {
             }
             if (IsthisSheepInList == false)
             {
-                other.GetComponent<SheepControltwo>().Master = this.gameObject;
-                other.GetComponent<SheepControltwo>().SS = SheepState.HAVEOWNER;
+                other.GetComponent<SheepControlThree>().Master = this.gameObject;
+                other.GetComponent<SheepControlThree>().SS = SheepState.HAVEOWNER;
                 this.SheepList.Add(other.gameObject);
             }
         }
@@ -129,29 +115,30 @@ public class Dog : SkillBase {
                 GM.FindAndRemoveAtSheepList(this.SheepList[i]);
                 SheepList[i].SetActive(false);
                 SheepList.RemoveAt(i);
-                Owner.GetComponent<PlayerControltwo>().Score++;
+                Owner.GetComponent<PlayerControlThree>().Score++;
                 yield return new WaitForSeconds(0.1f);
             }
             this.gameObject.SetActive(false);
         }
     }
 
+    public override bool SetInstance(GameObject IO, GameObject ITG)
+    {
+        return base.SetInstance(IO, ITG);
+    }
+
+    public override bool FindSkillNeedCameraFix()
+    {
+        return base.FindSkillNeedCameraFix();
+    }
+
     private void Update()
     {
-        if (IsSkillActive)
+        if (SS == SkillState.LAUNCHED && this.Owner != null)
         {
-            maincamera.IsSkillCutScene = true;
-            CameraAction();
-        }
-        else
-        {
-            maincamera.IsSkillCutScene = false;
-        }
-        if (IsLaunched)
-        {
-            ArrowImage.gameObject.SetActive(false);
             GoStraight();
         }
         LeaderSheep();
     }
+
 }

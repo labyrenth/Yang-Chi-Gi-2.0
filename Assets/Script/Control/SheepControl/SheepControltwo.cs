@@ -43,7 +43,7 @@ public class SheepControltwo : MonoBehaviour
             this.Master = target;
             //ChangeLeader(target);
             SS = SheepState.HAVEOWNER;
-            Master.GetComponent<PlayerControltwo>().AddSheepList(this.gameObject);
+            Master.GetComponent<PlayerControlThree>().AddSheepList(this.gameObject);
             GM.FindAndRemoveAtSheepList(this.gameObject);
         }
         else
@@ -51,7 +51,7 @@ public class SheepControltwo : MonoBehaviour
             //ChangeLeader(target);
             if (Master.gameObject.tag == "Head")
             {
-                Master.GetComponent<PlayerControltwo>().ChangeMaster(this.gameObject, target);
+                Master.GetComponent<PlayerControlThree>().ChangeMaster(this.gameObject, target);
             }
             else if (Master.gameObject.tag == "Dog")
             {
@@ -63,19 +63,6 @@ public class SheepControltwo : MonoBehaviour
 
     void ResetTarget(GameObject col)
     {
-        col.GetComponent<PlayerControltwo>().TargetSheep = null;
+        col.GetComponent<PlayerControlThree>().TargetSheep = null;
     }
-
-    /*void ChangeLeader(GameObject target)
-    {
-        if (target.GetComponent<PlayerControltwo>().SheepList.Count == 0)
-        {
-            this.leader = target;
-        }
-        else
-        {
-            this.leader = target.GetComponent<PlayerControltwo>().SheepList[target.GetComponent<PlayerControltwo>().SheepList.Count - 1];
-        }
-    }*/
-
 }

@@ -13,7 +13,7 @@ public class GameManager : ManagerBase {
     Text UIEnemyScore;
     GameObject EndScreen;
 
-    GameObject Enemy;
+    public GameObject Enemy;
     Button SelectedButton;
     Button SkillFireButton;
     RectTransform Compassbar;
@@ -33,7 +33,7 @@ public class GameManager : ManagerBase {
     public RectTransform NegativeMarketPrefab;
     public SkillDataBase SkillDB;
     public CameraControl mainCamera;
-
+    public HQControl HQ;
     public List<GameObject> SheepList;
     public List<GameButtonEvent> SkillButtonList;
     public List<GameObject> grassprefab;
@@ -45,9 +45,13 @@ public class GameManager : ManagerBase {
     
     int index;
     float Timer;
-    public float skillcooltimer = 10f;
-    bool TimerStart;
+    float skillcooltimer = 10f;
+    public bool TimerStart;
     int Skillindexcount;
+
+    public bool check;
+
+    public GameObject ActivatedSkillPrefab;
 
     public override void Awake()
     {
@@ -91,6 +95,11 @@ public class GameManager : ManagerBase {
         Skillindexcount = 0;
     }
 
+    private void Start()
+    {
+        HQ = Player.GetComponent<PlayerControlThree>().HQ.GetComponent<HQControl>();
+    }
+
     void Showremainingtime()
     {
         string timetext;
@@ -110,7 +119,7 @@ public class GameManager : ManagerBase {
     void ShowScore()
     {
         string scoretext;
-        PlayerScore = Player.GetComponent<PlayerControltwo>().Score;
+        PlayerScore = Player.GetComponent<PlayerControlThree>().Score;
         if (PlayerScore >= 10)
         {
             scoretext = "My Score : " + PlayerScore;
@@ -125,7 +134,7 @@ public class GameManager : ManagerBase {
     void ShowMySheep()
     {
         string scoretext;
-        SheepCount = Player.GetComponent<PlayerControltwo>().SheepCount;
+        SheepCount = Player.GetComponent<PlayerControlThree>().SheepCount;
         if (SheepCount >= 10)
         {
             scoretext = "Current Sheep : " + SheepCount;
@@ -140,7 +149,7 @@ public class GameManager : ManagerBase {
     void ShowEnemyScore()
     {
         string scoretext;
-        EnemyScore = Enemy.GetComponent<PlayerControltwo>().Score;
+        EnemyScore = Enemy.GetComponent<PlayerControlThree>().Score;
         if (EnemyScore >= 10)
         {
             scoretext = "Enemy Score : " + EnemyScore;
@@ -223,14 +232,14 @@ public class GameManager : ManagerBase {
         GameObject Readytext = GameObject.Find("ReadyText");
         GameObject EndText = GameObject.Find("EndText");
         EndText.SetActive(false);
-        Player.GetComponent<PlayerControltwo>().IsgameOver = true;
-        Enemy.GetComponent<PlayerControltwo>().IsgameOver = true;
+        Player.GetComponent<PlayerControlThree>().IsgameOver = true;
+        Enemy.GetComponent<PlayerControlThree>().IsgameOver = true;
         yield return new WaitForSeconds(3);
         Readytext.SetActive(false);
         EndText.SetActive(true);
         EndScreen.SetActive(false);
-        Player.GetComponent<PlayerControltwo>().IsgameOver = false;
-        Enemy.GetComponent<PlayerControltwo>().IsgameOver = false;
+        Player.GetComponent<PlayerControlThree>().IsgameOver = false;
+        Enemy.GetComponent<PlayerControlThree>().IsgameOver = false;
         TimerStart = true;
         yield return 0;
     }
@@ -238,10 +247,10 @@ public class GameManager : ManagerBase {
     IEnumerator FinishRoutine()
     {
         EndScreen.SetActive(true);
-        Player.GetComponent<PlayerControltwo>().IsgameOver = true;
-        Enemy.GetComponent<PlayerControltwo>().IsgameOver = true;
-        PlayManage.Instance.PlayerScore = Player.GetComponent<PlayerControltwo>().SheepCount;
-        PlayManage.Instance.EnemyScore = Enemy.GetComponent<PlayerControltwo>().SheepCount;
+        Player.GetComponent<PlayerControlThree>().IsgameOver = true;
+        Enemy.GetComponent<PlayerControlThree>().IsgameOver = true;
+        PlayManage.Instance.PlayerScore = Player.GetComponent<PlayerControlThree>().SheepCount;
+        PlayManage.Instance.EnemyScore = Enemy.GetComponent<PlayerControlThree>().SheepCount;
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Result");
     }
@@ -284,6 +293,22 @@ public class GameManager : ManagerBase {
                 SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillButtonActive();
             }
         }
+
+        
+    }
+
+    void CheckCameraFix()
+    {
+        if (SelectedButton != null && SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillIndex != 0 && SkillDB.SkillPrefab[SelectedButton.gameObject.GetComponent<GameButtonEvent>().SkillIndex].GetComponentInChildren<SkillBase>().FindSkillNeedCameraFix())
+        {
+            mainCamera.IsSkillCutScene = true;
+            HQ.Arrow.gameObject.SetActive(true);
+        }
+        else
+        {
+            mainCamera.IsSkillCutScene = false;
+            HQ.Arrow.gameObject.SetActive(false);
+        }
     }
 
     void SkillCooltime()
@@ -300,7 +325,7 @@ public class GameManager : ManagerBase {
                 {
                     SkillButtonList[0].IsSkillCanActive = true;
                     SkillDB.ButtonIconInRandomList(SkillButtonList[0].gameObject.GetComponent<Button>(), Skillindexcount);
-                    CalSkillIndexCount();
+                    CalSkillIndexCount(SkillButtonList[0]);
                     skillcooltimer = 10f;
 
                 }
@@ -308,49 +333,78 @@ public class GameManager : ManagerBase {
                 {
                     SkillButtonList[1].IsSkillCanActive = true;
                     SkillDB.ButtonIconInRandomList(SkillButtonList[1].gameObject.GetComponent<Button>(), Skillindexcount);
-                    CalSkillIndexCount();
+                    CalSkillIndexCount(SkillButtonList[1]);
                     skillcooltimer = 10f;
                 }
             }
         }
     }
 
-    void CalSkillIndexCount()
+    void CalSkillIndexCount(GameButtonEvent targetButton)
     {
-            if (Skillindexcount < SkillDB.SkillIndexList.Count-1)
-                Skillindexcount++;
-            else
-                Skillindexcount = 0;
+        targetButton.SkillIndex = SkillDB.SkillIndexList[Skillindexcount];
+        if (Skillindexcount < SkillDB.SkillIndexList.Count - 1)
+        {
+            Skillindexcount++;
+        }
+        else
+            Skillindexcount = 0;
     }
-
 
     public void SkillFireAction()
     {
         if (SelectedButton.gameObject.GetComponent<GameButtonEvent>() == null || !SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive)
             return;
-        else if(SelectedButton.gameObject.GetComponent<GameButtonEvent>() != null && SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive)
+        else if (SelectedButton.gameObject.GetComponent<GameButtonEvent>() != null && SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive)
         {
-            SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive = false;
-        }
-    }//수정필요
+            GameButtonEvent GBEtemp = SelectedButton.gameObject.GetComponent<GameButtonEvent>();
+            check = false;
+            SelectedButton.image.sprite = SkillDB.SkillIcon[0];
+            GBEtemp.IsSkillCanActive = false;
+            ActivatedSkillPrefab = Instantiate(SkillDB.SkillPrefab[GBEtemp.SkillIndex]);
+            GBEtemp.SkillIndex = 0;
 
+            check = ActivatedSkillPrefab.GetComponentInChildren<SkillBase>().SetInstance(this.Player, this.Enemy);
+
+            if (HQ.Arrow.gameObject.activeSelf)
+            {
+                ActivatedSkillPrefab.transform.rotation = this.HQ.ArrowPivot.rotation;
+                HQ.Arrow.gameObject.SetActive(false);
+            }
+            else
+                ActivatedSkillPrefab.transform.rotation = this.HQ.gameObject.transform.rotation;
+
+            if (check)
+                ActivatedSkillPrefab.GetComponentInChildren<SkillBase>().SS = SkillState.LAUNCHED;
+            else
+            {
+                while (check)
+                {
+                    check = ActivatedSkillPrefab.GetComponentInChildren<SkillBase>().SetInstance(this.Player, this.Enemy);
+                }
+                ActivatedSkillPrefab.GetComponentInChildren<SkillBase>().SS = SkillState.LAUNCHED;
+            }
+        }
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
         ShowUIText();
         TimerSet();
         ShowNegativeObjectInCompassbar(mainCamera.gameObject,Enemy, NegativeMarketPrefab);
+        CheckCameraFix();
         for(int i = 0; i<SheepList.Count; i++)
         {
             ShowPositiveObjectInCompassbar(mainCamera.gameObject, SheepList[i], sheepMarker[i]);
         }
-        if (SelectedButton == null)
+
+        if (SelectedButton != null && SelectedButton.gameObject.GetComponent<GameButtonEvent>().IsSkillCanActive)
         {
-            SkillFireButton.gameObject.SetActive(false);
+            SkillFireButton.gameObject.SetActive(true);
         }
         else
         {
-            SkillFireButton.gameObject.SetActive(true);
+            SkillFireButton.gameObject.SetActive(false);
         }
     }
 }
