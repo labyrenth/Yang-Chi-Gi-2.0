@@ -81,6 +81,8 @@ public class Dog : SkillBase {
             SheepList[temp].GetComponent<SheepControlThree>().Master = target;
             GM.FindAndRemoveAtSheepList(this.SheepList[temp]);
             target.GetComponent<PlayerControlThree>().SheepList.Add(this.SheepList[temp]);
+            SheepList[temp].transform.parent = target.GetComponent<PlayerControlThree>().SheepArea.transform;
+            SheepList[temp].GetComponent<SheepControlThree>().SetthisLocalPosition();
         }
         SheepList.RemoveRange(index, SheepList.Count - index);
     }

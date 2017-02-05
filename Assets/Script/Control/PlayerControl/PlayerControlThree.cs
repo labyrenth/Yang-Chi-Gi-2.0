@@ -92,6 +92,7 @@ public class PlayerControlThree : MonoBehaviour {
     {
         int index = SheepList.IndexOf(Sheep);
         SheepList[index].GetComponent<SheepControlThree>().Master = target;
+        target.GetComponent<PlayerControlThree>().AddSheepList(Sheep);
         SheepList.RemoveAt(index);
     }
 
@@ -236,7 +237,15 @@ public class PlayerControlThree : MonoBehaviour {
         }
         else if (PS == PlayerState.ENEMYSEARCH)
         {
-            TargetSheep = GM.Enemy;
+            int tempcount = GM.Enemy.GetComponent<PlayerControlThree>().SheepList.Count;
+            if (tempcount == 0)
+            {
+                TargetSheep = GM.Enemy;
+            }
+            else
+            {
+                TargetSheep = GM.Enemy.GetComponent<PlayerControlThree>().SheepList[tempcount - 1];
+            }
         }
     }
 

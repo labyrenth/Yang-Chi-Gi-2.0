@@ -17,13 +17,39 @@ public class HQControl : MonoBehaviour {
 
     void CameraAction()
     {
+
+#if UNITY_EDITOR
+
         if (Input.GetMouseButton(0) && EventSystem.current.IsPointerOverGameObject() == false)
         {
+
             float xDif = Input.mousePosition.x - Screen.width / 2;
             float yDif = Input.mousePosition.y - Screen.height / 2;
             float angle = Mathf.Atan2(xDif, yDif) * Mathf.Rad2Deg;
             ArrowPivot.rotation = Quaternion.AngleAxis(angle, this.transform.up);
+
         }
+
+#elif UNITY_ANDROID
+
+        if (Input.touchCount > 0)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                if (touch.phase == TouchPhase.Moved && EventSystem.current.IsPointerOverGameObject() == false)
+                {
+                    if (touch.fingerId == 0)
+                    {
+                        float xDif = touch.position.x - Screen.width / 2;    //this calculates the horizontal distance between the current finger location and the location last frame.
+                        float yDif = touch.position.y - Screen.height / 2;
+                        float angle = Mathf.Atan2(xDif, yDif) * Mathf.Rad2Deg;
+                        ArrowPivot.rotation = Quaternion.AngleAxis(angle, this.transform.up);
+                    }
+                }
+            }
+        }
+#endif
+
     }
 
     private void OnTriggerEnter(Collider col)

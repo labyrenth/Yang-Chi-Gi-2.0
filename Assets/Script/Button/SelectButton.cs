@@ -54,7 +54,7 @@ public class SelectButton : MonoBehaviour {
         PlayManage.Instance.angle = this.angle;
         PlayManage.Instance.score = this.score;
         PlayManage.Instance.distance = this.distance;
-        PlayManage.Instance.IsBoost = this.IsBoost;
+
     }
 
     void ShowExplain()

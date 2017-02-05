@@ -15,7 +15,6 @@ public class PlayManage : ManagerBase {
     public float angle;
     public float score;
     public float distance;
-    public bool IsBoost;
     public float EXP;
     public float sound;
     public int Quality;
@@ -23,7 +22,7 @@ public class PlayManage : ManagerBase {
     public float PlayerScore;
     public float EnemyScore;
 
-    private void Awake()                //싱글톤 오브젝트를 만들자!
+    public override void Awake()                //싱글톤 오브젝트를 만들자!
     {
         if (Instance == null)           //Static 변수를 지정하고 이것이 없을경우 - PlayManage 스크립트를 저장하고 이것이 전 범위적인 싱글톤 오브젝트가 된다.
         {
@@ -60,10 +59,6 @@ public class PlayManage : ManagerBase {
         PlayerPrefs.SetFloat("INITIALANGLE", angle);
         PlayerPrefs.SetFloat("INITIALSCORE",score);
         PlayerPrefs.SetFloat("INITIALDISTANCE",distance);
-        if (IsBoost == false)
-            PlayerPrefs.SetInt("INITIALBOOST", 0);
-        else
-            PlayerPrefs.SetInt("INITIALBOOST", 1);
         PlayerPrefs.SetFloat("SOUND", sound);
         PlayerPrefs.SetInt("QUALITY", Quality);
         PlayerPrefs.SetFloat("EXP", EXP);
@@ -76,12 +71,7 @@ public class PlayManage : ManagerBase {
         this.speed = PlayerPrefs.GetFloat("INITIALSPEED",5);
         this.angle = PlayerPrefs.GetFloat("INITIALANGLE", 5);
         this.score = PlayerPrefs.GetFloat("INITIALSCORE", 0);
-        this.distance = PlayerPrefs.GetFloat("INITIALDISTANCE", 5);
-        int boostcheck = PlayerPrefs.GetInt("INITIALBOOST", 0);
-        if (boostcheck == 0)
-            this.IsBoost = false;
-        else
-            this.IsBoost = true;
+        this.distance = PlayerPrefs.GetFloat("INITIALDISTANCE", 15);
         this.sound = PlayerPrefs.GetFloat("SOUND", 50);
         this.Quality = PlayerPrefs.GetInt("QUALITY", 2);
         this.EXP = PlayerPrefs.GetFloat("EXP", 0);
@@ -89,7 +79,16 @@ public class PlayManage : ManagerBase {
 
     public void ResetData()
     {
-        PlayerPrefs.DeleteAll();
+        this.playerID = "Beginner";
+        this.playerlevel = 1;
+        this.speed = 5;
+        this.angle = 5;
+        this.score = 0;
+        this.distance = 15;
+        this.sound = 50;
+        this.Quality = 2;
+        this.EXP = 0;
+        SaveData();
     }
 
     void Update()

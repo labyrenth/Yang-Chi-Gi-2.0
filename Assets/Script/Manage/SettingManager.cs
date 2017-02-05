@@ -25,6 +25,8 @@ public class SettingManager : ManagerBase {
         this.Warning.SetActive(false);
         this.sound.value = PlayManage.Instance.sound;
         this.quality = PlayManage.Instance.Quality;
+
+        Reset.onClick.AddListener(DeleteAllData);
 	}
 	
 	// Update is called once per frame
@@ -56,5 +58,7 @@ public class SettingManager : ManagerBase {
     public void DeleteAllData()
     {
         PlayManage.Instance.ResetData();
+        this.sound.value = 50;
+        this.Warning.SetActive(false);
     }
 }

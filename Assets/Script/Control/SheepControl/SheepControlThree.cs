@@ -55,7 +55,7 @@ public class SheepControlThree : MonoBehaviour {
                 this.transform.parent = target.GetComponent<PlayerControlThree>().SheepArea.transform;
                 SetthisLocalPosition();
             }
-            else if (Master.gameObject.tag == "Dog")
+            else if (Master.gameObject.tag == "Dog" && Master.GetComponent<Dog>().Owner != target)
             {
                 Master.GetComponent<Dog>().ChangeMaster(this.gameObject, target);
                 ResetTarget(target.gameObject);
@@ -63,7 +63,7 @@ public class SheepControlThree : MonoBehaviour {
         }
     }
 
-    void SetthisLocalPosition()
+    public void SetthisLocalPosition()
     {
         Vector2 Circleposition = Random.insideUnitCircle * 3;
         this.transform.localPosition = new Vector3(Circleposition.x, 0, Circleposition.y);

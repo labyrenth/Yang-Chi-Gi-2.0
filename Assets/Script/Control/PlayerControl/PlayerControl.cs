@@ -35,7 +35,7 @@ public class PlayerControl : MonoBehaviour
         this.angle = PlayManage.Instance.angle;
         this.InitialScore = PlayManage.Instance.score;
         this.mindistance = PlayManage.Instance.distance;
-        this.IsBoost = PlayManage.Instance.IsBoost;
+
         IsgameOver = false;
     }
 

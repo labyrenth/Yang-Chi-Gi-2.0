@@ -47,7 +47,7 @@ public class GameManager : ManagerBase {
     float Timer;
     float skillcooltimer = 10f;
     public bool TimerStart;
-    int Skillindexcount;
+    public int Skillindexcount;
 
     public bool check;
 
@@ -340,15 +340,26 @@ public class GameManager : ManagerBase {
         }
     }
 
-    void CalSkillIndexCount(GameButtonEvent targetButton)
+    void CalSkillIndexCount(GameButtonEvent B)
     {
-        targetButton.SkillIndex = SkillDB.SkillIndexList[Skillindexcount];
+        B.SkillIndex = SkillDB.SkillIndexList[Skillindexcount];
+        calSIC();
+    }
+
+    void calSIC()
+    {
         if (Skillindexcount < SkillDB.SkillIndexList.Count - 1)
         {
             Skillindexcount++;
         }
         else
             Skillindexcount = 0;
+
+        if (SkillDB.SkillIndexList[Skillindexcount] != SkillButtonList[0].SkillIndex && SkillDB.SkillIndexList[Skillindexcount] != SkillButtonList[1].SkillIndex)
+        {
+            return;
+        }
+        else { calSIC(); }
     }
 
     public void SkillFireAction()
