@@ -95,6 +95,16 @@
     <Compile Include="Assets\Script\Manage\PlayManage.cs" />
     <Compile Include="Assets\Script\Manage\ResultManager.cs" />
     <Compile Include="Assets\Script\Manage\SettingManager.cs" />
+    <Compile Include="Assets\Script\Network\Client\KingGodClient.cs" />
+    <Compile Include="Assets\Script\Network\Client\Network_Client.cs" />
+    <Compile Include="Assets\Script\Network\DemoMsgHandler.cs" />
+    <Compile Include="Assets\Script\Network\MsgHandler.cs" />
+    <Compile Include="Assets\Script\Network\NetworkTranslator.cs" />
+    <Compile Include="Assets\Script\Network\ReceiveQueue.cs" />
+    <Compile Include="Assets\Script\Network\Server\ClientManager.cs" />
+    <Compile Include="Assets\Script\Network\Server\Network_Server.cs" />
+    <Compile Include="Assets\Script\Network\Server\ServerSide_Main.cs" />
+    <Compile Include="Assets\Script\Network\Server\TcpConnection.cs" />
     <Compile Include="Assets\Script\Skill\Accel.cs" />
     <Compile Include="Assets\Script\Skill\Dog.cs" />
     <Compile Include="Assets\Script\Skill\Donkey.cs" />

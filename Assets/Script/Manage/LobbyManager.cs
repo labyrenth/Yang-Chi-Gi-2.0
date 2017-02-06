@@ -8,6 +8,7 @@ public class LobbyManager : ManagerBase {
     public Text playerleveltext;
     public Text playerIDtext;
     public Text playerEXP;
+    public GameObject clientObject;
 
     int level;
     float EXP;
