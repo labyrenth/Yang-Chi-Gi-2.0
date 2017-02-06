@@ -9,16 +9,20 @@ public class LobbyManager : ManagerBase {
     public Text playerIDtext;
     public Text playerEXP;
     public GameObject clientObject;
+    public GameObject LoadingScene;
+    public Image targeticon;
+    public Text MatchingMessage;
+    public Button MatchingCancleButton;
 
     int level;
     float EXP;
     float maxEXP;
+    float Iconrotation;
 
     private void Start()
     {
         LobbyInit();
         CalEXP();
-        
     }
 
     void LobbyInit()
@@ -39,6 +43,32 @@ public class LobbyManager : ManagerBase {
         playerIDtext.text = PlayManage.Instance.playerID;
         maxEXP = level * 1000;
         playerEXP.text = "EXP : " + PlayManage.Instance.EXP.ToString("N0") + " / " + maxEXP.ToString("N0");
+
+        LoadingScene = GameObject.Find("Loading");
+        targeticon = LoadingScene.GetComponentsInChildren<Image>()[1];
+        MatchingMessage = LoadingScene.GetComponentsInChildren<Text>()[0];
+        MatchingCancleButton = LoadingScene.GetComponentInChildren<Button>();
+        MatchingCancleButton.onClick.AddListener(CancleMatching);
+        LoadingScene.SetActive(false);
+
+    }
+
+    void TargetIconRotate()
+    {
+        Iconrotation += 75f * Time.deltaTime;
+        targeticon.rectTransform.rotation = Quaternion.AngleAxis(Iconrotation, targeticon.rectTransform.forward);
+    }
+
+    void TextBlink()
+    {
+        Vector4 blinkcolor = new Vector4(255, 255, 255, 255);
+        float i;
+
+    }
+
+    void CancleMatching()
+    {
+        LoadingScene.SetActive(false);
     }
 
     void CalEXP()
@@ -50,6 +80,15 @@ public class LobbyManager : ManagerBase {
             PlayManage.Instance.playerlevel = this.level;
             PlayManage.Instance.EXP = this.EXP;
             LobbyInit();
+
+        }
+    }
+
+    private void Update()
+    {
+        if (LoadingScene.activeSelf)
+        {
+            TargetIconRotate();
         }
     }
 }
